@@ -1,0 +1,6 @@
+{
+  "name": "FocusGuard",
+  "description": "Digital wellbeing and strict distraction control with short-video blocking, daily app usage enforcement, hardened PIN anti-uninstall protection, and Lyria focus music.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
