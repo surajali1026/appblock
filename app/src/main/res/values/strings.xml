@@ -25,6 +25,8 @@
     <string name="btn_stop_enforcer">Pause Enforcer</string>
 
     <string name="pin_dialog_verify_title">Verify Security PIN</string>
+    <string name="pin_dialog_verify_uninstall_subtitle">Enter your 4-digit PIN to continue.</string>
+    <string name="pin_dialog_verify_guard_subtitle">Enter your 4-digit PIN to verify this action.</string>
     <string name="pin_dialog_setup_title">Configure 4-Digit Security PIN</string>
     <string name="pin_dialog_setup_subtitle">Protects uninstallation and anti-tamper guard controls.</string>
     <string name="pin_hint">4-digit PIN</string>
