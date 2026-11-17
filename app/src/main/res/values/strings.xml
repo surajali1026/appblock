@@ -42,4 +42,6 @@
     <string name="fgs_channel_desc">Monitors daily app limits and enforces distraction-free focus sessions.</string>
     <string name="fgs_notification_title">FocusGuard Enforcer Running</string>
     <string name="fgs_notification_text">Monitoring daily app usage limits and short-video distractions.</string>
+    <string name="accessibility_service_name">Shorts and Reels Blocker</string>
+    <string name="accessibility_service_description">Detects and exits short-video feeds in supported apps when enabled.</string>
 </resources>
