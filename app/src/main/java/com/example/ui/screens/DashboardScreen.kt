@@ -3,6 +3,7 @@ package com.example.ui.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,8 +12,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.data.local.BlockEventEntity
@@ -45,8 +48,41 @@ fun DashboardScreen(
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text("FocusGuard Lite", style = MaterialTheme.typography.headlineMedium)
-                    Text("Screen-time tracking and daily app limits. Accessibility blocking and anti-uninstall protection have been removed.")
-                    Text("Today's limit events: $todayBlockCount")
+                    Text("Block short-video distractions and manage daily app limits.")
+                    Text("Today's blocked events: $todayBlockCount")
+                }
+            }
+        }
+        item {
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text("Shorts & Reels blocker", style = MaterialTheme.typography.titleLarge)
+                    Text(
+                        if (health.accessibilityEnabled) "Accessibility permission is enabled."
+                        else "Enable Accessibility permission once to activate Shorts and Reels blocking."
+                    )
+                    Button(onClick = onOpenAccessibilitySettings, modifier = Modifier.fillMaxWidth()) {
+                        Text(if (health.accessibilityEnabled) "Accessibility settings" else "Enable blocker")
+                    }
+                    Text("YouTube Shorts", style = MaterialTheme.typography.titleMedium)
+                    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                        Text("Block Shorts", modifier = Modifier.weight(1f))
+                        Switch(checked = settings.shortsBlockerEnabled, onCheckedChange = onToggleShortsBlocker)
+                    }
+                    Text("Instagram / Facebook Reels", style = MaterialTheme.typography.titleMedium)
+                    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                        Text("Block Reels", modifier = Modifier.weight(1f))
+                        Switch(checked = settings.reelsBlockerEnabled, onCheckedChange = onToggleReelsBlocker)
+                    }
+                    Text("Optional: TikTok", style = MaterialTheme.typography.titleMedium)
+                    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                        Text("Block TikTok", modifier = Modifier.weight(1f))
+                        Switch(checked = settings.tiktokBlockerEnabled, onCheckedChange = onToggleTiktokBlocker)
+                    }
+                    Text(
+                        "The blocker exits detected short-video screens. App layouts and updates can affect detection.",
+                        style = MaterialTheme.typography.bodySmall
+                    )
                 }
             }
         }
@@ -89,8 +125,8 @@ fun DashboardScreen(
         item {
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text("Recent limit events", style = MaterialTheme.typography.titleLarge)
-                    if (recentEvents.isEmpty()) Text("No limit events recorded yet.")
+                    Text("Recent block events", style = MaterialTheme.typography.titleLarge)
+                    if (recentEvents.isEmpty()) Text("No block events recorded yet.")
                     else recentEvents.take(8).forEach { event ->
                         Text("${event.appName}: ${event.detail}", style = MaterialTheme.typography.bodyMedium)
                     }
