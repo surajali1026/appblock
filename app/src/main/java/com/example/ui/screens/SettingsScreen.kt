@@ -323,9 +323,9 @@ fun SettingsScreen(
                         )
                         Text(
                             text = "1. Set your 4-digit Security PIN above.\n" +
-                                "2. Grant Accessibility Service permission in Shield tab.\n" +
+                                "2. Grant Accessibility Service & Battery Exemption in Shield tab.\n" +
                                 "3. Grant Usage Access and start the Usage Enforcer Service.\n" +
-                                "4. Add daily limits in Limits tab and compose focus audio in Focus Audio.",
+                                "4. Configure daily app quotas in the Limits tab.",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )

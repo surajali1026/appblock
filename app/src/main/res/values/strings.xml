@@ -5,7 +5,6 @@
 
     <string name="nav_shield">Shield</string>
     <string name="nav_limits">Limits</string>
-    <string name="nav_audio">Focus Audio</string>
     <string name="nav_vault">Vault</string>
 
     <string name="hero_title">Digital Wellbeing Shield</string>
@@ -42,7 +41,7 @@
     <string name="btn_uninstall_app">Uninstall FocusGuard</string>
 
     <string name="overlay_return_home">Return to Home Screen</string>
-    <string name="overlay_open_focus_audio">Open Focus Audio Studio</string>
+    <string name="overlay_open_dashboard">Open FocusGuard Shield</string>
 
     <string name="fgs_channel_name">Usage Limit Enforcer</string>
     <string name="fgs_channel_desc">Monitors daily app limits and enforces distraction-free focus sessions.</string>

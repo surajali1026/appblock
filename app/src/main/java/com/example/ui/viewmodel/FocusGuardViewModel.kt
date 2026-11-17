@@ -10,14 +10,9 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.ai.FocusMusicGenerator
-import com.example.ai.LyriaModelOption
-import com.example.audio.AudioPlaybackState
-import com.example.audio.FocusAudioPlayer
 import com.example.data.local.AppLimitEntity
 import com.example.data.local.BlockEventEntity
 import com.example.data.local.FocusGuardDatabase
-import com.example.data.local.FocusTrackEntity
 import com.example.security.PinSecurityManager
 import com.example.security.PinVerifyResult
 import com.example.security.SecuritySettings
@@ -25,7 +20,6 @@ import com.example.service.UsageEnforcerForegroundService
 import com.example.usage.BatteryOptimizationHelper
 import com.example.usage.InstalledAppInfo
 import com.example.usage.UsageStatsHelper
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -35,7 +29,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File
 
 data class PermissionHealthState(
     val accessibilityEnabled: Boolean = false,
@@ -52,13 +45,6 @@ data class PermissionHealthState(
             batteryOptimizationExempt,
             enforcerServiceRunning
         ).count { it }
-}
-
-sealed interface MusicGenUiState {
-    data object Idle : MusicGenUiState
-    data class Loading(val modelLabel: String) : MusicGenUiState
-    data class Success(val trackTitle: String, val notes: String) : MusicGenUiState
-    data class Error(val message: String) : MusicGenUiState
 }
 
 enum class PinActionPurpose {
@@ -81,8 +67,6 @@ class FocusGuardViewModel(application: Application) : AndroidViewModel(applicati
     private val database = FocusGuardDatabase.getInstance(appContext)
     private val dao = database.focusGuardDao()
     private val pinManager = PinSecurityManager(appContext)
-    private val musicGenerator = FocusMusicGenerator(appContext)
-    private val audioPlayer = FocusAudioPlayer()
 
     val securitySettings: StateFlow<SecuritySettings> = pinManager.settingsFlow
         .stateIn(
@@ -112,15 +96,6 @@ class FocusGuardViewModel(application: Application) : AndroidViewModel(applicati
             initialValue = 0
         )
 
-    val focusTracks: StateFlow<List<FocusTrackEntity>> = dao.observeAllFocusTracks()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = emptyList()
-        )
-
-    val audioPlaybackState: StateFlow<AudioPlaybackState> = audioPlayer.playbackState
-
     private val _permissionHealth = MutableStateFlow(PermissionHealthState())
     val permissionHealth: StateFlow<PermissionHealthState> = _permissionHealth.asStateFlow()
 
@@ -129,9 +104,6 @@ class FocusGuardViewModel(application: Application) : AndroidViewModel(applicati
 
     private val _dailyUsageMap = MutableStateFlow<Map<String, Long>>(emptyMap())
     val dailyUsageMap: StateFlow<Map<String, Long>> = _dailyUsageMap.asStateFlow()
-
-    private val _musicGenState = MutableStateFlow<MusicGenUiState>(MusicGenUiState.Idle)
-    val musicGenState: StateFlow<MusicGenUiState> = _musicGenState.asStateFlow()
 
     private val _pinDialogState = MutableStateFlow(PinDialogUiState())
     val pinDialogState: StateFlow<PinDialogUiState> = _pinDialogState.asStateFlow()
@@ -248,10 +220,8 @@ class FocusGuardViewModel(application: Application) : AndroidViewModel(applicati
         ) {
             if (purpose == PinActionPurpose.UNINSTALL_APP) {
                 _statusBanner.value = "Configure your 4-digit Security PIN first to authorize uninstallation."
-                PinActionPurpose.SETUP_PIN
-            } else {
-                PinActionPurpose.SETUP_PIN
             }
+            PinActionPurpose.SETUP_PIN
         } else {
             purpose
         }
@@ -386,79 +356,8 @@ class FocusGuardViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-    fun generateFocusMusic(title: String, prompt: String, option: LyriaModelOption) {
-        val cleanPrompt = prompt.trim()
-        if (cleanPrompt.isEmpty()) {
-            _musicGenState.value = MusicGenUiState.Error("Enter a musical mood or focus prompt.")
-            return
-        }
-        val trackTitle = title.trim().ifEmpty {
-            cleanPrompt.take(36).replaceFirstChar { it.uppercase() }
-        }
-
-        viewModelScope.launch {
-            _musicGenState.value = MusicGenUiState.Loading(option.label)
-            try {
-                val generated = musicGenerator.generateFocusTrack(cleanPrompt, option)
-                val entity = FocusTrackEntity(
-                    title = trackTitle,
-                    prompt = cleanPrompt,
-                    modelUsed = generated.modelId,
-                    filePath = generated.filePath,
-                    mimeType = generated.mimeType,
-                    durationLabel = generated.durationLabel,
-                    lyricsOrNotes = generated.lyricsOrNotes
-                )
-                val id = withContext(Dispatchers.IO) { dao.insertFocusTrack(entity) }
-                _musicGenState.value = MusicGenUiState.Success(
-                    trackTitle = trackTitle,
-                    notes = generated.lyricsOrNotes
-                )
-                audioPlayer.playTrack(id, generated.filePath)
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                Log.e(TAG, "Music generation error", e)
-                _musicGenState.value = MusicGenUiState.Error(
-                    e.localizedMessage ?: "Failed to generate focus music via Firebase AI Logic."
-                )
-            }
-        }
-    }
-
-    fun toggleTrackPlayback(track: FocusTrackEntity) {
-        audioPlayer.togglePlay(track.id, track.filePath)
-    }
-
-    fun toggleLooping() {
-        audioPlayer.toggleLooping()
-    }
-
-    fun seekAudioTo(positionMs: Int) {
-        audioPlayer.seekTo(positionMs)
-    }
-
-    fun deleteTrack(track: FocusTrackEntity) {
-        if (audioPlayer.playbackState.value.activeTrackId == track.id) {
-            audioPlayer.stopAndRelease()
-        }
-        viewModelScope.launch(Dispatchers.IO) {
-            runCatching { File(track.filePath).delete() }
-            dao.deleteFocusTrack(track.id)
-        }
-    }
-
     fun clearStatusBanner() {
         _statusBanner.value = null
-    }
-
-    fun resetMusicGenState() {
-        _musicGenState.value = MusicGenUiState.Idle
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        audioPlayer.stopAndRelease()
     }
 
     companion object {

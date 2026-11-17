@@ -18,11 +18,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.outlined.Lock
-import androidx.compose.material.icons.outlined.MusicNote
 import androidx.compose.material.icons.outlined.Shield
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material3.Icon
@@ -59,10 +57,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.security.configureAppCheck
 import com.example.ui.components.PinVerificationDialog
 import com.example.ui.screens.DashboardScreen
-import com.example.ui.screens.FocusMusicScreen
 import com.example.ui.screens.SettingsScreen
 import com.example.ui.screens.UsageLimitsScreen
 import com.example.ui.theme.DeepEmeraldContainer
@@ -78,7 +74,6 @@ import com.example.usage.UsageStatsHelper
 
 const val ROUTE_DASHBOARD = "dashboard"
 const val ROUTE_LIMITS = "limits"
-const val ROUTE_AUDIO = "audio"
 const val ROUTE_SETTINGS = "settings"
 
 private data class NavDestinationItem(
@@ -105,13 +100,6 @@ private val NAV_ITEMS = listOf(
         tag = "nav_tab_limits"
     ),
     NavDestinationItem(
-        route = ROUTE_AUDIO,
-        labelResId = R.string.nav_audio,
-        selectedIcon = Icons.Filled.MusicNote,
-        unselectedIcon = Icons.Outlined.MusicNote,
-        tag = "nav_tab_audio"
-    ),
-    NavDestinationItem(
         route = ROUTE_SETTINGS,
         labelResId = R.string.nav_vault,
         selectedIcon = Icons.Filled.Lock,
@@ -123,31 +111,18 @@ private val NAV_ITEMS = listOf(
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Configure Firebase App Check before UI, ViewModels, or Firebase operations
-        configureAppCheck(this, intent)
-
         enableEdgeToEdge()
-
-        val initialTab = intent?.getStringExtra(EXTRA_INITIAL_TAB)
-        val startRoute = if (initialTab == TAB_AUDIO) ROUTE_AUDIO else ROUTE_DASHBOARD
 
         setContent {
             FocusGuardTheme {
-                FocusGuardApp(startRoute = startRoute)
+                FocusGuardApp()
             }
         }
-    }
-
-    companion object {
-        const val EXTRA_INITIAL_TAB = "extra_initial_tab"
-        const val TAB_AUDIO = "tab_audio"
     }
 }
 
 @Composable
 private fun FocusGuardApp(
-    startRoute: String,
     viewModel: FocusGuardViewModel = viewModel()
 ) {
     val context = LocalContext.current
@@ -162,9 +137,6 @@ private fun FocusGuardApp(
     val dailyUsageMap by viewModel.dailyUsageMap.collectAsStateWithLifecycle()
     val recentEvents by viewModel.recentBlockEvents.collectAsStateWithLifecycle()
     val todayBlockCount by viewModel.todayBlockCount.collectAsStateWithLifecycle()
-    val focusTracks by viewModel.focusTracks.collectAsStateWithLifecycle()
-    val audioPlaybackState by viewModel.audioPlaybackState.collectAsStateWithLifecycle()
-    val musicGenState by viewModel.musicGenState.collectAsStateWithLifecycle()
     val pinDialogState by viewModel.pinDialogState.collectAsStateWithLifecycle()
     val statusBanner by viewModel.statusBanner.collectAsStateWithLifecycle()
 
@@ -290,7 +262,7 @@ private fun FocusGuardApp(
                 Box(modifier = Modifier.weight(1f)) {
                     NavHost(
                         navController = navController,
-                        startDestination = startRoute
+                        startDestination = ROUTE_DASHBOARD
                     ) {
                         composable(ROUTE_DASHBOARD) {
                             DashboardScreen(
@@ -340,20 +312,6 @@ private fun FocusGuardApp(
                                 },
                                 onToggleLimitEnabled = { viewModel.toggleAppLimitEnabled(it) },
                                 onDeleteLimit = { viewModel.deleteAppLimit(it) }
-                            )
-                        }
-                        composable(ROUTE_AUDIO) {
-                            FocusMusicScreen(
-                                musicGenState = musicGenState,
-                                tracks = focusTracks,
-                                playbackState = audioPlaybackState,
-                                onGenerateMusic = { title, prompt, option ->
-                                    viewModel.generateFocusMusic(title, prompt, option)
-                                },
-                                onTogglePlay = { viewModel.toggleTrackPlayback(it) },
-                                onToggleLoop = { viewModel.toggleLooping() },
-                                onSeekTo = { viewModel.seekAudioTo(it) },
-                                onDeleteTrack = { viewModel.deleteTrack(it) }
                             )
                         }
                         composable(ROUTE_SETTINGS) {

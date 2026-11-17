@@ -32,19 +32,6 @@ data class BlockEventEntity(
     val detail: String
 )
 
-@Entity(tableName = "focus_tracks")
-data class FocusTrackEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val title: String,
-    val prompt: String,
-    val modelUsed: String,
-    val filePath: String,
-    val mimeType: String,
-    val durationLabel: String,
-    val lyricsOrNotes: String,
-    val createdAtMs: Long = System.currentTimeMillis()
-)
-
 @Dao
 interface FocusGuardDao {
     @Query("SELECT * FROM app_limits ORDER BY appName ASC")
@@ -70,20 +57,11 @@ interface FocusGuardDao {
 
     @Insert
     suspend fun insertBlockEvent(event: BlockEventEntity)
-
-    @Query("SELECT * FROM focus_tracks ORDER BY createdAtMs DESC")
-    fun observeAllFocusTracks(): Flow<List<FocusTrackEntity>>
-
-    @Insert
-    suspend fun insertFocusTrack(track: FocusTrackEntity): Long
-
-    @Query("DELETE FROM focus_tracks WHERE id = :trackId")
-    suspend fun deleteFocusTrack(trackId: Long)
 }
 
 @Database(
-    entities = [AppLimitEntity::class, BlockEventEntity::class, FocusTrackEntity::class],
-    version = 1,
+    entities = [AppLimitEntity::class, BlockEventEntity::class],
+    version = 2,
     exportSchema = false
 )
 abstract class FocusGuardDatabase : RoomDatabase() {
@@ -99,7 +77,10 @@ abstract class FocusGuardDatabase : RoomDatabase() {
                     context.applicationContext,
                     FocusGuardDatabase::class.java,
                     "focusguard_db"
-                ).build().also { INSTANCE = it }
+                )
+                    .fallbackToDestructiveMigration(dropAllTables = true)
+                    .build()
+                    .also { INSTANCE = it }
             }
         }
     }

@@ -18,9 +18,6 @@ Native Android (Kotlin, Jetpack Compose, Material 3) digital wellbeing and stric
    - **App-Level Uninstall Flow**: **Vault → Uninstall FocusGuard** opens a PIN verification dialog (`PasswordVisualTransformation`) before authorizing a 35-second window and launching `Intent.ACTION_UNINSTALL_PACKAGE`.
    - **System-Level Anti-Uninstall Guard**: `VideoAndUninstallBlockerAccessibilityService` intercepts FocusGuard App Info, Force Stop, and Package Installer uninstall screens in `com.android.settings` / package installers unless PIN-authorized, kicking back to Home.
 
-4. **Focus Audio Studio (Lyria 3 via Firebase AI Logic)**
-   - Composes 30-second reset loops (`lyria-3-clip-preview`) and full-length deep-work soundtracks (`lyria-3-pro-preview`) via Firebase AI Logic (`Firebase.ai`) and App Check, with local playback and looping via `MediaPlayer`.
-
 ## Setup Instructions
 
 1. **Accessibility Guard**: Open the **Shield** tab → **Accessibility Guard Service → Grant Access** and enable **FocusGuard Reels & Uninstall Guard**.
@@ -28,7 +25,6 @@ Native Android (Kotlin, Jetpack Compose, Material 3) digital wellbeing and stric
 3. **Unrestricted Battery Access**: In **Shield**, tap **Exempt** on **Unrestricted Battery Access** to exempt FocusGuard from Android Doze throttling.
 4. **Start Background Enforcer**: Tap **Start Enforcer Service** in the **Shield** tab (grant notification permission on Android 13+).
 5. **Configure Security PIN**: Open **Vault → Set 4-Digit Security PIN** to lock uninstallation and guard toggles.
-6. **Firebase AI Logic (Focus Audio)**: Provisioned via `app/google-services.json` with App Check (`configureAppCheck` in `MainActivity.onCreate()`). Note that `lyria-3-clip-preview` / `lyria-3-pro-preview` calls require an active Firebase Blaze billing plan and quota on the linked project.
 
 ## Building & Downloading from GitHub
 

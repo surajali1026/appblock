@@ -28,7 +28,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.filled.TimerOff
 import androidx.compose.material3.Button
@@ -85,7 +84,7 @@ class BlockedOverlayActivity : ComponentActivity() {
                     appName = appName,
                     detail = detail,
                     onGoHome = { navigateToHomeScreen() },
-                    onOpenFocusAudio = { openFocusAudioStudio() }
+                    onOpenDashboard = { openFocusGuardDashboard() }
                 )
             }
         }
@@ -100,10 +99,9 @@ class BlockedOverlayActivity : ComponentActivity() {
         finish()
     }
 
-    private fun openFocusAudioStudio() {
+    private fun openFocusGuardDashboard() {
         val mainIntent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-            putExtra(MainActivity.EXTRA_INITIAL_TAB, MainActivity.TAB_AUDIO)
         }
         startActivity(mainIntent)
         finish()
@@ -145,7 +143,7 @@ private fun BlockedOverlayScreen(
     appName: String,
     detail: String,
     onGoHome: () -> Unit,
-    onOpenFocusAudio: () -> Unit
+    onOpenDashboard: () -> Unit
 ) {
     var countdownMs by remember { mutableLongStateOf(UsageStatsHelper.millisUntilMidnight()) }
     LaunchedEffect(Unit) {
@@ -283,19 +281,19 @@ private fun BlockedOverlayScreen(
             }
 
             OutlinedButton(
-                onClick = onOpenFocusAudio,
+                onClick = onOpenDashboard,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp)
-                    .testTag("overlay_focus_audio_button")
+                    .testTag("overlay_open_dashboard_button")
             ) {
                 Icon(
-                    imageVector = Icons.Default.MusicNote,
+                    imageVector = Icons.Default.Shield,
                     contentDescription = null,
                     modifier = Modifier.padding(end = 8.dp)
                 )
                 Text(
-                    text = stringResource(R.string.overlay_open_focus_audio),
+                    text = stringResource(R.string.overlay_open_dashboard),
                     style = MaterialTheme.typography.labelLarge
                 )
             }
