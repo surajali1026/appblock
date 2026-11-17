@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FocusGuard</string>
+    <string name="app_name">FocusGuard Lite</string>
 
     <string name="nav_shield">Shield</string>
     <string name="nav_limits">Limits</string>
