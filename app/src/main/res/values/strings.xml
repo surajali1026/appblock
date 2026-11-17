@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">FocusGuard</string>
-    <string name="accessibility_service_label">FocusGuard Reels &amp; Uninstall Guard</string>
-    <string name="accessibility_service_description">Monitors active windows to block distracting short-form video feeds (Instagram Reels, YouTube Shorts) and prevents unauthorized app uninstallation via PIN-protected guard.</string>
 
     <string name="nav_shield">Shield</string>
     <string name="nav_limits">Limits</string>
@@ -12,8 +10,6 @@
     <string name="status_protected">Shield Active</string>
     <string name="status_attention">Setup Required</string>
 
-    <string name="accessibility_perm_title">Accessibility Guard Service</string>
-    <string name="accessibility_perm_desc">Detects Instagram Reels, YouTube Shorts, and system uninstall screens in real time.</string>
     <string name="usage_perm_title">Usage Access Permission</string>
     <string name="usage_perm_desc">Tracks accurate daily screen time per app to enforce midnight usage limits.</string>
     <string name="notification_perm_title">Enforcer Notifications</string>
@@ -29,8 +25,6 @@
     <string name="btn_stop_enforcer">Pause Enforcer</string>
 
     <string name="pin_dialog_verify_title">Verify Security PIN</string>
-    <string name="pin_dialog_verify_uninstall_subtitle">Enter your 4-digit FocusGuard PIN to authorize app uninstallation.</string>
-    <string name="pin_dialog_verify_guard_subtitle">Enter your 4-digit FocusGuard PIN to modify hardened protection settings.</string>
     <string name="pin_dialog_setup_title">Configure 4-Digit Security PIN</string>
     <string name="pin_dialog_setup_subtitle">Protects uninstallation and anti-tamper guard controls.</string>
     <string name="pin_hint">4-digit PIN</string>
@@ -38,7 +32,6 @@
     <string name="btn_verify_unlock">Verify &amp; Proceed</string>
     <string name="btn_save_pin">Save PIN</string>
     <string name="btn_cancel">Cancel</string>
-    <string name="btn_uninstall_app">Uninstall FocusGuard</string>
 
     <string name="overlay_return_home">Return to Home Screen</string>
     <string name="overlay_open_dashboard">Open FocusGuard Shield</string>
