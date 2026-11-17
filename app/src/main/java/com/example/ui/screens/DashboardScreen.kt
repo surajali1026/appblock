@@ -77,11 +77,11 @@ fun DashboardScreen(
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text("Optional permissions", style = MaterialTheme.typography.titleLarge)
-                    Text("Notifications: \${if (health.notificationsGranted) "Allowed" else "Not allowed"}")
+                    Text("Notifications: ${if (health.notificationsGranted) "Allowed" else "Not allowed"}")
                     if (!health.notificationsGranted) {
                         OutlinedButton(onClick = onRequestNotificationPermission, modifier = Modifier.fillMaxWidth()) { Text("Allow notifications") }
                     }
-                    Text("Battery optimization: \${if (health.batteryOptimizationExempt) "Unrestricted" else "May be restricted"}")
+                    Text("Battery optimization: ${if (health.batteryOptimizationExempt) "Unrestricted" else "May be restricted"}")
                     OutlinedButton(onClick = onRequestBatteryOptimization, modifier = Modifier.fillMaxWidth()) { Text("Battery settings") }
                 }
             }
@@ -92,7 +92,7 @@ fun DashboardScreen(
                     Text("Recent limit events", style = MaterialTheme.typography.titleLarge)
                     if (recentEvents.isEmpty()) Text("No limit events recorded yet.")
                     else recentEvents.take(8).forEach { event ->
-                        Text("\${event.appName}: \${event.detail}", style = MaterialTheme.typography.bodyMedium)
+                        Text("${event.appName}: ${event.detail}", style = MaterialTheme.typography.bodyMedium)
                     }
                 }
             }
