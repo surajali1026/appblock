@@ -358,16 +358,25 @@ class FocusGuardViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
+    @Suppress("DEPRECATION")
     private fun launchSystemUninstallIntent() {
         val packageUri = Uri.parse("package:${appContext.packageName}")
-        val uninstallIntent = Intent(Intent.ACTION_DELETE, packageUri).apply {
+        val uninstallIntent = Intent(Intent.ACTION_UNINSTALL_PACKAGE, packageUri).apply {
+            putExtra(Intent.EXTRA_RETURN_RESULT, true)
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
         try {
             appContext.startActivity(uninstallIntent)
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to launch system uninstall dialog", e)
-            _statusBanner.value = "Unable to open system uninstaller: ${e.localizedMessage}"
+            try {
+                val fallbackIntent = Intent(Intent.ACTION_DELETE, packageUri).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                appContext.startActivity(fallbackIntent)
+            } catch (fallbackEx: Exception) {
+                Log.e(TAG, "Failed to launch system uninstall dialog", fallbackEx)
+                _statusBanner.value = "Unable to open system uninstaller: ${fallbackEx.localizedMessage}"
+            }
         }
     }
 
