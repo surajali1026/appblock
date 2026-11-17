@@ -23,14 +23,11 @@ jobs:
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools;platforms;android-36;build-tools;36.0.0'
 
-      - name: Update cmdline-tools, accept licenses & install SDK 36.1
-        run: |
-          SDKMANAGER="${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager"
-          yes | "$SDKMANAGER" --licenses || true
-          "$SDKMANAGER" --install "cmdline-tools;latest" "platform-tools" "build-tools;36.0.0" || true
-          yes | "$SDKMANAGER" --licenses || true
-          "$SDKMANAGER" --install "platforms;android-36.1" || "$SDKMANAGER" --install "platforms;android-36" || true
+      - name: Accept Android SDK licenses
+        run: yes | sdkmanager --licenses
 
       - name: Prepare debug keystore
         run: |
