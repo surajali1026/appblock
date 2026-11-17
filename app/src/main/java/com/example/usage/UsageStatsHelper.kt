@@ -48,7 +48,7 @@ object UsageStatsHelper {
     fun isAccessibilityServiceEnabled(context: Context): Boolean {
         val expectedComponent = ComponentName(
             context,
-            VideoAndUninstallBlockerAccessibilityService::class.java
+            ShortVideoBlockerAccessibilityService::class.java
         )
         val enabledServices = Settings.Secure.getString(
             context.contentResolver,
