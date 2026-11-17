@@ -6,7 +6,7 @@
     <string name="nav_vault">Vault</string>
 
     <string name="hero_title">Digital Wellbeing Shield</string>
-    <string name="hero_subtitle">Real-time short-video deflection, daily usage enforcement, and PIN-hardened uninstall defense.</string>
+    <string name="hero_subtitle">Short-video blocking and daily app usage enforcement.</string>
     <string name="status_protected">Shield Active</string>
     <string name="status_attention">Setup Required</string>
 
@@ -28,7 +28,7 @@
     <string name="pin_dialog_verify_uninstall_subtitle">Enter your 4-digit PIN to continue.</string>
     <string name="pin_dialog_verify_guard_subtitle">Enter your 4-digit PIN to verify this action.</string>
     <string name="pin_dialog_setup_title">Configure 4-Digit Security PIN</string>
-    <string name="pin_dialog_setup_subtitle">Protects uninstallation and anti-tamper guard controls.</string>
+    <string name="pin_dialog_setup_subtitle">Protects access to FocusGuard app settings.</string>
     <string name="pin_hint">4-digit PIN</string>
     <string name="pin_confirm_hint">Confirm 4-digit PIN</string>
     <string name="btn_verify_unlock">Verify &amp; Proceed</string>
