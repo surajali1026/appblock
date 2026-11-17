@@ -11,7 +11,7 @@ import android.os.Build
 import android.os.Process
 import android.provider.Settings
 import android.text.TextUtils
-import com.example.service.VideoAndUninstallBlockerAccessibilityService
+import com.example.service.ShortVideoBlockerAccessibilityService
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
