@@ -60,7 +60,7 @@
 
 
         <service
-            android:name=".service.VideoAndUninstallBlockerAccessibilityService"
+            android:name=".service.ShortVideoBlockerAccessibilityService"
             android:label="@string/accessibility_service_name"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
             android:exported="true">
