@@ -73,6 +73,7 @@ import com.example.ui.theme.MutedSlate
 import com.example.ui.theme.ObsidianVoid
 import com.example.ui.viewmodel.FocusGuardViewModel
 import com.example.ui.viewmodel.PinActionPurpose
+import com.example.usage.BatteryOptimizationHelper
 import com.example.usage.UsageStatsHelper
 
 const val ROUTE_DASHBOARD = "dashboard"
@@ -306,6 +307,13 @@ private fun FocusGuardApp(
                                 onRequestNotificationPermission = {
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                                         notificationLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                                    }
+                                },
+                                onRequestBatteryOptimization = {
+                                    if (!BatteryOptimizationHelper.requestBatteryOptimizationExemption(context)) {
+                                        context.startActivity(
+                                            BatteryOptimizationHelper.createBatteryOptimizationSettingsIntent()
+                                        )
                                     }
                                 },
                                 onToggleEnforcerService = { viewModel.toggleEnforcerService() },

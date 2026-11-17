@@ -22,6 +22,7 @@ import com.example.security.PinSecurityManager
 import com.example.security.PinVerifyResult
 import com.example.security.SecuritySettings
 import com.example.service.UsageEnforcerForegroundService
+import com.example.usage.BatteryOptimizationHelper
 import com.example.usage.InstalledAppInfo
 import com.example.usage.UsageStatsHelper
 import kotlinx.coroutines.CancellationException
@@ -40,6 +41,7 @@ data class PermissionHealthState(
     val accessibilityEnabled: Boolean = false,
     val usageStatsGranted: Boolean = false,
     val notificationsGranted: Boolean = true,
+    val batteryOptimizationExempt: Boolean = false,
     val enforcerServiceRunning: Boolean = false
 ) {
     val activeCount: Int
@@ -47,6 +49,7 @@ data class PermissionHealthState(
             accessibilityEnabled,
             usageStatsGranted,
             notificationsGranted,
+            batteryOptimizationExempt,
             enforcerServiceRunning
         ).count { it }
 }
@@ -157,12 +160,15 @@ class FocusGuardViewModel(application: Application) : AndroidViewModel(applicati
             } else {
                 true
             }
+            val batteryExempt =
+                BatteryOptimizationHelper.isIgnoringBatteryOptimizations(appContext)
             val running = UsageEnforcerForegroundService.isRunning.value
 
             _permissionHealth.value = PermissionHealthState(
                 accessibilityEnabled = accessibility,
                 usageStatsGranted = usageStats,
                 notificationsGranted = notifications,
+                batteryOptimizationExempt = batteryExempt,
                 enforcerServiceRunning = running
             )
 

@@ -19,8 +19,12 @@
     <string name="usage_perm_desc">Tracks accurate daily screen time per app to enforce midnight usage limits.</string>
     <string name="notification_perm_title">Enforcer Notifications</string>
     <string name="notification_perm_desc">Keeps the background usage monitor alive and notifies when limits are enforced.</string>
+    <string name="battery_perm_title">Unrestricted Battery Access</string>
+    <string name="battery_perm_desc">Exempts FocusGuard from Doze throttling so usage tracking stays accurate and unblocked.</string>
 
     <string name="btn_grant_access">Grant Access</string>
+    <string name="btn_exempt_battery">Exempt</string>
+    <string name="btn_battery_exempted">Unrestricted</string>
     <string name="btn_enabled">Active</string>
     <string name="btn_start_enforcer">Start Enforcer Service</string>
     <string name="btn_stop_enforcer">Pause Enforcer</string>

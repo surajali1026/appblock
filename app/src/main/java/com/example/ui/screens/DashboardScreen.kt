@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessibilityNew
+import androidx.compose.material.icons.filled.BatteryChargingFull
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.NotificationsActive
@@ -78,6 +79,7 @@ fun DashboardScreen(
     onOpenAccessibilitySettings: () -> Unit,
     onOpenUsageAccessSettings: () -> Unit,
     onRequestNotificationPermission: () -> Unit,
+    onRequestBatteryOptimization: () -> Unit,
     onToggleEnforcerService: () -> Unit,
     onToggleReelsBlocker: (Boolean) -> Unit,
     onToggleShortsBlocker: (Boolean) -> Unit,
@@ -143,6 +145,19 @@ fun DashboardScreen(
                             tag = "grant_notifications_button"
                         )
                     }
+                    PermissionStatusCard(
+                        icon = Icons.Default.BatteryChargingFull,
+                        title = stringResource(R.string.battery_perm_title),
+                        description = stringResource(R.string.battery_perm_desc),
+                        isGranted = health.batteryOptimizationExempt,
+                        actionLabel = if (health.batteryOptimizationExempt) {
+                            stringResource(R.string.btn_battery_exempted)
+                        } else {
+                            stringResource(R.string.btn_exempt_battery)
+                        },
+                        onClick = onRequestBatteryOptimization,
+                        tag = "grant_battery_exemption_button"
+                    )
                     EnforcerServiceCard(
                         isRunning = health.enforcerServiceRunning,
                         usageGranted = health.usageStatsGranted,
@@ -367,7 +382,7 @@ private fun ShieldHeroCard(
                     )
                     MetricPill(
                         label = "SYSTEM GUARDS",
-                        value = "${health.activeCount}/4",
+                        value = "${health.activeCount}/5",
                         accent = ElectricCyan,
                         modifier = Modifier.weight(1f)
                     )
