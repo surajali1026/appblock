@@ -24,7 +24,7 @@ class ExampleRobolectricTest {
     fun `read app name from context`() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val appName = context.getString(R.string.app_name)
-        assertEquals("FocusGuard", appName)
+        assertEquals("FocusGuard Lite", appName)
     }
 
     @Test
