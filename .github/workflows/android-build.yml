@@ -19,15 +19,18 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 21
+          java-version: '21'
 
-      - name: Set up Android SDK & accept licenses
+      - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Install Android SDK 36 & accept SDK licenses
+      - name: Update cmdline-tools, accept licenses & install SDK 36.1
         run: |
-          yes | "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" --licenses || true
-          "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" "platform-tools" "build-tools;36.0.0" "platforms;android-36" || true
+          SDKMANAGER="${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKMANAGER" --licenses || true
+          "$SDKMANAGER" --install "cmdline-tools;latest" "platform-tools" "build-tools;36.0.0" || true
+          yes | "$SDKMANAGER" --licenses || true
+          "$SDKMANAGER" --install "platforms;android-36.1" || "$SDKMANAGER" --install "platforms;android-36" || true
 
       - name: Prepare debug keystore
         run: |
@@ -42,13 +45,13 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: 9.3.1
+          gradle-version: '9.3.1'
 
       - name: Run unit tests
-        run: gradle :app:testDebugUnitTest --no-daemon
+        run: gradle :app:testDebugUnitTest --no-daemon --stacktrace
 
       - name: Build Debug APK
-        run: gradle :app:assembleDebug --no-daemon
+        run: gradle :app:assembleDebug --no-daemon --stacktrace
 
       - name: Upload Debug APK Artifact
         uses: actions/upload-artifact@v4
